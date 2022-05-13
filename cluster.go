@@ -71,7 +71,7 @@ func createRegionInstances(
 	svc := ec2.New(sess)
 
 	for i := 0; i < regionInstanceCount; i++ {
-		instanceName := fmt.Sprintf("%s-%s-%s-T%2d", instancePrefix, name, region, i+1)
+		instanceName := fmt.Sprintf("%s-%s-%s-T%02d", instancePrefix, name, region, i+1)
 		createSingleInstance(svc, regionConfig, sgConfig, instanceName)
 	}
 }

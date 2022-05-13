@@ -13,8 +13,16 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
-const useKey = "/home/yifan/.ssh/TradoveCheckED25519US.pem"
 const chainID = 10
+
+func useKey() string {
+	key := os.Getenv("QUORUM_CLUSTER_ED25519")
+	if len(key) == 0 {
+		log.Fatal("No quorum cluster ed25519 set")
+	}
+
+	return key
+}
 
 func resetDir(path string) {
 	if err := os.RemoveAll(path); err != nil {
@@ -53,7 +61,7 @@ func uploadConfigFilesAndInit(instances []*ec2.Instance) {
 		app := "ssh"
 		args := []string{
 			"-i",
-			useKey,
+			useKey(),
 			"-o",
 			"StrictHostKeyChecking=no",
 			fmt.Sprintf("ubuntu@%s", *instance.PublicIpAddress),
@@ -72,7 +80,7 @@ func uploadConfigFilesAndInit(instances []*ec2.Instance) {
 		app = "scp"
 		args = []string{
 			"-i",
-			useKey,
+			useKey(),
 			"-o",
 			"StrictHostKeyChecking=no",
 			filepath.Join(quorumClusterPath, "static-nodes.json"),
@@ -91,7 +99,7 @@ func uploadConfigFilesAndInit(instances []*ec2.Instance) {
 		app = "scp"
 		args = []string{
 			"-i",
-			useKey,
+			useKey(),
 			"-o",
 			"StrictHostKeyChecking=no",
 			filepath.Join(quorumClusterPath, "genesis.json"),
@@ -109,7 +117,7 @@ func uploadConfigFilesAndInit(instances []*ec2.Instance) {
 		app = "ssh"
 		args = []string{
 			"-i",
-			useKey,
+			useKey(),
 			"-o",
 			"StrictHostKeyChecking=no",
 			fmt.Sprintf("ubuntu@%s", *instance.PublicIpAddress),
@@ -128,7 +136,7 @@ func uploadConfigFilesAndInit(instances []*ec2.Instance) {
 		app = "scp"
 		args = []string{
 			"-i",
-			useKey,
+			useKey(),
 			"-o",
 			"StrictHostKeyChecking=no",
 			filepath.Join(quorumClusterPath, fmt.Sprintf("%d/nodekey", index)),
@@ -153,14 +161,14 @@ func executeBlockchain(count int) {
 		app := "ssh"
 		args := []string{
 			"-i",
-			useKey,
+			useKey(),
 			"-o",
 			"StrictHostKeyChecking=no",
 			fmt.Sprintf("ubuntu@%s", *instance.PublicIpAddress),
 			fmt.Sprintf(
 				"PRIVATE_CONFIG=ignore nohup /home/ubuntu/bin/geth --datadir /home/ubuntu/data"+
 					" --nodiscover --istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1"+
-					" --networkid %d --http --http.addr 0.0.0.0"+
+					" --networkid %d --maxpeers 20 --http --http.addr 0.0.0.0"+
 					" --http.api admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,istanbul"+
 					" --emitcheckpoints --ws --ws.addr 0.0.0.0 --ws.port 8546 --ws.origins '*'"+
 					" --ws.api admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,istanbul"+
