@@ -18,12 +18,13 @@ var regions = []string{"us-east-1", "us-west-1"}
 
 const instancePrefix = "Quorum-cluster"
 const quorumClusterPath = "/tmp/quorum-cluster"
+const ec2Type = "c6i.2xlarge"
 
 func createSingleInstance(svc *ec2.EC2, instanceConfig map[string]string, sgConfig []*string, instanceName string) error {
 	// Specify the details of the instance that you want to create.
 	runResult, err := svc.RunInstances(&ec2.RunInstancesInput{
 		ImageId:          aws.String(instanceConfig["ami"]),
-		InstanceType:     aws.String("t2.micro"),
+		InstanceType:     aws.String(ec2Type),
 		MinCount:         aws.Int64(1),
 		MaxCount:         aws.Int64(1),
 		KeyName:          aws.String(instanceConfig["key"]),
@@ -194,7 +195,7 @@ func printInstances(instances []*ec2.Instance) {
 	for _, instance := range instances {
 		fmt.Printf(
 			"Instance: %s, %s, %s, %s\n",
-			*instance.InstanceId, *instance.State.Name, *instance.Tags[0].Value, *instance.PublicIpAddress,
+			*instance.Tags[0].Value, *instance.InstanceId, *instance.State.Name, *instance.PublicIpAddress,
 		)
 	}
 }

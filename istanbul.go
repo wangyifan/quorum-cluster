@@ -168,7 +168,9 @@ func executeBlockchain(count int) {
 			fmt.Sprintf(
 				"PRIVATE_CONFIG=ignore nohup /home/ubuntu/bin/geth --datadir /home/ubuntu/data"+
 					" --nodiscover --istanbul.blockperiod 5 --syncmode full --mine --minerthreads 1"+
-					" --networkid %d --maxpeers 20 --http --http.addr 0.0.0.0"+
+					" --networkid %d --maxpeers 20 --http --http.addr 0.0.0.0 "+
+					" --txpool.accountslots 5000 --txpool.globalslots 100000"+
+					" --txpool.accountqueue 5000 --txpool.globalqueue 100000"+
 					" --http.api admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,istanbul"+
 					" --emitcheckpoints --ws --ws.addr 0.0.0.0 --ws.port 8546 --ws.origins '*'"+
 					" --ws.api admin,db,eth,debug,miner,net,shh,txpool,personal,web3,quorum,istanbul"+
