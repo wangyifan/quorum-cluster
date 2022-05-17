@@ -16,6 +16,7 @@ import (
 
 var regions = []string{"us-east-1", "us-west-1"}
 
+// Do not update prefix, you might accidentally delete instances in AWS
 const instancePrefix = "Quorum-cluster"
 const quorumClusterPath = "/tmp/quorum-cluster"
 const ec2Type = "c6i.2xlarge"
@@ -88,7 +89,7 @@ func createFullCluster(totalInstanceCount int, name string) error {
 }
 
 func getRegionConfig(region string) (map[string]string, []*string) {
-	eastAMI := "ami-05389a60399ebe46e"
+	eastAMI := "ami-0543d459479c07587"
 	eastKey := "Tradove Check | ED25519"
 	eastSgPing := "sg-03c8000a6a670ee66"
 	eastSgQuorum := "sg-02a7c0b3d9b7d647e"
@@ -96,7 +97,7 @@ func getRegionConfig(region string) (map[string]string, []*string) {
 	eastSgBlockscout := "sg-007ff1d1aaa989776"
 	eastSgConfig := []*string{&eastSgPing, &eastSgQuorum, &eastSgSSH, &eastSgBlockscout}
 
-	westAMI := "ami-0647199721088964c"
+	westAMI := "ami-0f036b4446d363fc6"
 	westKey := "Tradove | ED25519 | dev"
 	westSgPing := "sg-07409fa2af10a693b"
 	westSgQuorum := "sg-00226ca88cb8a403b"
